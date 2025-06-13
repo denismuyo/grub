@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grub n Snuck - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ff6e40', // Deep orange
+                        secondary: '#0f172a', // Deep blue
+                        dark: '#191919', // Black
+                        light: '#f8fafc' // White
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        .dashboard-content {
+            transition: all 0.3s ease;
+        }
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        /* Custom scrollbar */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #ff6e40;
+            border-radius: 3px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #e65100;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Mobile Nav Toggle -->
+    <div class="lg:hidden fixed top-0 left-0 right-0 bg-secondary text-white p-4 flex justify-between items-center z-50">
+        <div class="font-bold text-xl">Grub n Snuck</div>
+        <button id="mobileMenuToggle" class="text-white focus:outline-none">
+            <i class="fas fa-bars text-2xl"></i>
+        </button>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="lg:w-64 fixed left-0 top-0 bottom-0 bg-secondary text-white sidebar hidden lg:block z-40">
+        <div class="p-4">
+            <div class="flex items-center justify-between border-b border-primary pb-4 mb-4">
+                <div class="font-bold text-xl">Grub n Snuck</div>
+                <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                    <span class="font-bold">A</span>
+                </div>
+            </div>
+            <nav>
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#dashboard" class="flex items-center p-2 rounded hover:bg-primary transition">
+                            <i class="fas fa-tachometer-alt mr-3"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#vendors" class="flex items-center p-2 rounded hover:bg-primary transition">
+                            <i class="fas fa-store mr-3"></i>
+                            <span>Vendor Management</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#top-vendors" class="flex items-center p-2 rounded hover:bg-primary transition">
+                            <i class="fas fa-trophy mr-3"></i>
+                            <span>Top Vendors</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#drivers" class="flex items-center p-2 rounded hover:bg-primary transition">
+                            <i class="fas fa-biking mr-3"></i>
+                            <span>Drivers</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#complaints" class="flex items-center p-2 rounded hover:bg-primary transition">
+                            <i class="fas fa-exclamation-circle mr-3"></i>
+                            <span>Complaints</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#settings" class="flex items-center p-2 rounded hover:bg-primary transition">
+                            <i class="fas fa-cog mr-3"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                    <li class="pt-4 mt-4 border-t border-gray-700">
+                        <a href="#logout" class="flex items-center p-2 rounded hover:bg-red-500 transition">
+                            <i class="fas fa-sign-out-alt mr-3"></i>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Mobile Sidebar -->
+    <div id="mobileMenu" class="lg:hidden mobile-menu fixed top-0 left-0 bottom-0 w-64 bg-secondary text-white z-50">
+        <div class="p-4 flex justify-between items-center border-b border-primary">
+            <div class="font-bold text-xl">Grub n Snuck</div>
+            <button id="mobileMenuClose" class="text-white focus:outline-none">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+        </div>
+        <nav class="p-4">
+            <ul class="space-y-4">
+                <li>
+                    <a href="#dashboard" class="flex items-center p-2 rounded hover:bg-primary transition">
+                        <i class="fas fa-tachometer-alt mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#vendors" class="flex items-center p-2 rounded hover:bg-primary transition">
+                        <i class="fas fa-store mr-3"></i>
+                        <span>Vendor Management</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#top-vendors" class="flex items-center p-2 rounded hover:bg-primary transition">
+                        <i class="fas fa-trophy mr-3"></i>
+                        <span>Top Vendors</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#drivers" class="flex items-center p-2 rounded hover:bg-primary transition">
+                        <i class="fas fa-biking mr-3"></i>
+                        <span>Drivers</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#complaints" class="flex items-center p-2 rounded hover:bg-primary transition">
+                        <i class="fas fa-exclamation-circle mr-3"></i>
+                        <span>Complaints</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#settings" class="flex items-center p-2 rounded hover:bg-primary transition">
+                        <i class="fas fa-cog mr-3"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li class="pt-4 mt-4 border-t border-gray-700">
+                    <a href="#logout" class="flex items-center p-2 rounded hover:bg-red-500 transition">
+                        <i class="fas fa-sign-out-alt mr-3"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="min-h-screen bg-gray-100 dashboard-content lg:ml-64">
+        <!-- Navbar -->
+        <header class="bg-white shadow-sm lg:static fixed top-14 lg:top-0 left-0 right-0 z-30">
+            <div class="flex justify-between items-center p-4">
+                <div class="flex items-center space-x-4">
+                    <!-- Search bar hidden on mobile -->
+                    <div class="hidden lg:flex items-center bg-gray-100 rounded-lg px-4 py-2">
+                        <i class="fas fa-search text-gray-500 mr-2"></i>
+                        <input type="text" placeholder="Search..." class="bg-transparent outline-none w-64">
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button class="text-gray-600 hover:text-primary focus:outline-none">
+                            <i class="fas fa-bell text-xl"></i>
+                            <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                        </button>
+                    </div>
+                    <div class="hidden lg:flex items-center space-x-2">
+                        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                            <span class="font-bold text-white">A</span>
+                        </div>
+                        <span class="font-medium">Admin</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Container -->
+        <main class="pt-20 pb-6 px-4 lg:px-6">
+            <!-- SECTION: Admin Login -->
+            <section id="login" class="min-h-screen flex items-center justify-center p-4">
+                <div class="w-full max-w-md bg-white rounded-lg shadow-md p-8">
+                    <div class="text-center mb-8">
+                        <div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-lock text-white text-3xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-secondary">Admin Login</h2>
+                        <p class="text-gray-600 mt-2">Enter your credentials to access the dashboard</p>
+                    </div>
+                    
+                    <form class="space-y-6">
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-envelope text-gray-400"></i>
+                                </div>
+                                <input type="email" id="email" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" placeholder="admin@grubnsnuck.com">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-lock text-gray-400"></i>
+                                </div>
+                                <input type="password" id="password" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" placeholder="••••••••">
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                                <label for="remember-me" class="ml-2 block text-sm text-gray-700">Remember me</label>
+                            </div>
+                            
+                            <a href="#" class="text-sm text-primary hover:underline">Forgot password?</a>
+                        </div>
+                        
+                        <div>
+                            <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition">
+                                Login
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- SECTION: Admin Dashboard -->
+            <section id="dashboard" class="hidden">
+                <div class="mb-6">
+                    <h1 class="text-2xl font-bold text-secondary">Dashboard Overview</h1>
+                    <p class="text-gray-600">Welcome back, Admin! Here's your business overview.</p>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white rounded-lg shadow p-4 border-l-4 border-primary">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-medium">Total Sales</p>
+                                <h3 class="text-2xl font-bold">$12,450</h3>
+                                <p class="text-green-500 text-sm mt-1">+12% from last week</p>
+                            </div>
+                            <div class="bg-primary bg-opacity-10 p-3 rounded-full">
+                                <i class="fas fa-dollar-sign text-primary text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow p-4 border-l-4 border-secondary">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-medium">Discounts</p>
+                                <h3 class="text-2xl font-bold">$1,250</h3>
+                                <p class="text-red-500 text-sm mt-1">+5% from last week</p>
+                            </div>
+                            <div class="bg-secondary bg-opacity-10 p-3 rounded-full">
+                                <i class="fas fa-tags text-secondary text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow p-4 border-l-4 border-yellow-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-medium">Active Users</p>
+                                <h3 class="text-2xl font-bold">3,429</h3>
+                                <p class="text-green-500 text-sm mt-1">+8.5% from last week</p>
+                            </div>
+                            <div class="bg-yellow-500 bg-opacity-10 p-3 rounded-full">
+                                <i class="fas fa-users text-yellow-500 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow p-4 border-l-4 border-green-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-medium">Delivery Fees</p>
+                                <h3 class="text-2xl font-bold">$980</h3>
+                                <p class="text-green-500 text-sm mt-1">+3.2% from last week</p>
+                            </div>
+                            <div class="bg-green-500 bg-opacity-10 p-3 rounded-full">
+                                <i class="fas fa-truck text-green-500 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold text-secondary mb-3">Quick Actions</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <a href="#vendors" class="bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center hover:shadow-md transition hover:border-primary hover:border cursor-pointer">
+                            <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mb-3">
+                                <i class="fas fa-store text-primary text-xl"></i>
+                            </div>
+                            <h3 class="font-medium text-lg text-secondary">Manage Vendors</h3>
+                            <p class="text-gray-500 text-sm text-center mt-1">View and manage all vendors in the system</p>
+                        </a>
+                        
+                        <a href="#drivers" class="bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center hover:shadow-md transition hover:border-secondary hover:border cursor-pointer">
+                            <div class="w-12 h-12 bg-secondary bg-opacity-10 rounded-full flex items-center justify-center mb-3">
+                                <i class="fas fa-biking text-secondary text-xl"></i>
+                            </div>
+                            <h3 class="font-medium text-lg text-secondary">Manage Drivers</h3>
+                            <p class="text-gray-500 text-sm text-center mt-1">View and manage all delivery drivers</p>
+                        </a>
+                        
+                        <a href="#complaints" class="bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center hover:shadow-md transition hover:border-red-500 hover:border cursor-pointer">
+                            <div class="w-12 h-12 bg-red-500 bg-opacity-10 rounded-full flex items-center justify-center mb-3">
+                                <i class="fas fa-exclamation-circle text-red-500 text-xl"></i>
+                            </div>
+                            <h3 class="font-medium text-lg text-secondary">Complaints & Reviews</h3>
+                            <p class="text-gray-500 text-sm text-center mt-1">Manage customer feedback and issues</p>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Charts -->
+                <div class="bg-white rounded-lg shadow p-4 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold text-secondary">Sales Trend (Last 30 Days)</h2>
+                        <div>
+                            <select class="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-primary focus:border-primary text-sm">
+                                <option>Last 7 Days</option>
+                                <option selected>Last 30 Days</option>
+                                <option>Last 90 Days</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Chart Placeholder -->
+                    <div class="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fas fa-chart-line text-4xl text-gray-400 mb-2"></i>
+                            <p class="text-gray-500">Sales chart will be displayed here</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Orders -->
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                    <div class="p-4 border-b">
+                        <h2 class="text-xl font-semibold text-secondary">Recent Orders</h2>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vendor</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-secondary">#GRUB-4872</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">John Doe</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Burger King</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$24.50</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Delivered</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-secondary">#GRUB-4871</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jane Smith</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Pizza Hut</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$38.25</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">On the way</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-secondary">#GRUB-4870</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Robert Johnson</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">McDonald's</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$15.80</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Preparing</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="p-4 border-t flex justify-end">
+                        <button class="text-primary hover:underline focus:outline-none">View All Orders</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: Vendor Management -->
+            <section id="vendors" class="hidden">
+                <div class="mb-6 flex justify-between items-center">
+                    <div>
+                        <h1 class="text-2xl font-bold text-secondary">Vendor Management</h1>
+                        <p class="text-gray-600">Manage all food vendors registered on the platform</p>
+                    </div>
+                    <button class="bg-primary text-white px-4 py-2 rounded-md hover:bg-orange-700 transition focus:outline-none">
+                        <i class="fas fa-plus mr-2"></i> Add Vendor
+                    </button>
+                </div>
+                
+                <!-- Vendor Search and Filter -->
+                <div class="bg-white rounded-lg shadow p-4 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="md:col-span-2">
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-search text-gray-400"></i>
+                                </div>
+                                <input type="text" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" placeholder="Search vendors...">
+                            </div>
+                        </div>
+                        <div>
+                            <select class="block w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                                <option>All Status</option>
+                                <option>Active</option>
+                                <option>Suspended</option>
+                                <option>Pending</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select class="block w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                                <option>All Categories</option>
+                                <option>Fast Food</option>
+                                <option>Beverages</option>
+                                <option>Desserts</option>
+                                <option>Asian</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Vendors List -->
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="p-4 border-b flex justify-between items-center">
+                        <h2 class="text-xl font-semibold text-secondary">All Vendors</h2>
+                        <p class="text-gray-600">25 vendors found</p>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vendor</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joining Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50 cursor-pointer">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden bg-gray-200">
+                                                <img src="https://via.placeholder.com/150" class="h-full w-full object-cover">
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-secondary">Burger King</div>
+                                                <div class="text-sm text-gray-500">Fast Food</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <div>john@burgerking.com</div>
+                                        <div>+1 (555) 123-4567</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15 Jan, 2023</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button class="text-primary hover:text-orange-700 mr-3">Edit</button>
+                                        <button class="text-red-500 hover:text-red-700">Suspend</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 cursor-pointer">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden bg-gray-200">
+                                                <img src="https://via.placeholder.com/150" class="h-full w-full object-cover">
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-secondary">Pizza Hut</div>
+                                                <div class="text-sm text-gray-500">Italian</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <div>contact@pizzahut.com</div>
+                                        <div>+1 (555) 987-6543</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">22 Feb, 2023</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button class="text-primary hover:text-orange-700 mr-3">Edit</button>
+                                        <button class="text-red-500 hover:text-red-700">Suspend</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 cursor-pointer">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden bg-gray-200">
+                                                <img src="https://via.placeholder.com/150" class="h-full w-full object-cover">
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-secondary">Taco Bell</div>
+                                                <div class="text-sm text-gray-500">Mexican</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <div>support@tacobell.com</div>
+                                        <div>+1 (555) 456-7890</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10 Mar, 2023</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button class="text-primary hover:text-orange-700 mr-3">Edit</button>
+                                        <button class="text-red-500 hover:text-red-700">Suspend</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="p-4 border-t flex justify-between items-center">
+                        <p class="text-sm text-gray-600">Showing <span class="font-medium">1</span> to <span class="font-medium">3</span> of <span class="font-medium">25</span> vendors</p>
+                        <nav class="flex space-x-2">
+                            <button class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                Previous
+                            </button>
+                            <button class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-white bg-primary hover:bg-orange-700">
+                                1
+                            </button>
+                            <button class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                2
+                            </button>
+                            <button class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                3
+                            </button>
+                            <button class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                Next
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+                
+                <!-- Vendor Details Modal (hidden by default) -->
+                <div id="vendorDetailsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="text-xl font-bold text-secondary">Burger King - Vendor Details</h3>
+                                    <p class="text-gray-600">Manage this vendor's information and products</p>
+                                </div>
+                                <button id="closeVendorModal" class="text-gray-400 hover:text-gray-500">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-medium text-lg text-secondary mb-2">Basic Information</h4>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700">Vendor Name</label>
+                                            <input type="text" value="Burger King" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700">Contact Email</label>
+                                            <input type="email" value="john@burgerking.com" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700">Phone Number</label>
+                                            <input type="tel" value="+1 (555) 123-4567" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700">Address</label>
+                                            <textarea class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">123 Burger St, Foodville, NY 10001</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="font-medium text-lg text-secondary mb-2">Business Information</h4>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700">Category</label>
+                                            <select class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                                                <option>Fast Food</option>
+                                                <option>Italian</option>
+                                                <option>Mexican</option>
+                                                <option>Asian</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700">Commission Rate</label>
+                                            <div class="mt-1 relative rounded-md shadow-sm">
+                                                <input type="text" value="15" class="block w-full pr-12 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                                                <div class="absolute inset-y-0 right-0 flex items-center">
+                                                    <span class="h-full py-0 pl-2 pr-3 border-transparent bg-transparent text-gray-500 sm:text-sm">%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700">Account Status</label>
+                                            <select class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                                                <option selected>Active</option>
+                                                <option>Suspended</option>
+                                                <option>Pending</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700">Logo</label>
+                                            <div class="mt-1 flex items-center">
+                                                <div class="h-16 w-16 rounded-full overflow-hidden bg-gray-200">
+                                                    <img src="https://via.placeholder.com/150" class="h-full w-full object-cover">
+                                                </div>
+                                                <button class="ml-4 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                                    Change
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-8">
+                                <h4 class="font-medium text-lg text-secondary mb-4">Products (12)</h4>
+                                
+                                <div class="space-y-4">
+                                    <div class="bg-gray-50 p-4 rounded-lg">
+                                        <div class="flex justify-between items-start">
+                                            <div class="flex items-start space-x-3">
+                                                <div class="flex-shrink-0 h-16 w-16 rounded-md overflow-hidden bg-gray-200">
+                                                    <img src="https://via.placeholder.com/150" class="h-full w-full object-cover">
+                                                </div>
+                                                <div>
+                                                    <h5 class="font-medium text-secondary">Whopper Sandwich</h5>
+                                                    <p class="text-sm text-gray-600">$6.99</p>
+                                                    <p class="text-xs text-gray-500 mt-1">Our signature sandwich with a 1/4 lb of flame-grilled beef</p>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">Approved</span>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3 flex space-x-2">
+                                            <button class="text-xs bg-primary text-white px-3 py-1 rounded hover:bg-orange-700 transition">Edit</button>
+                                            <button class="text-xs bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700 transition">Reject</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-gray-50 p-4 rounded-lg">
+                                        <div class="flex justify-between items-start">
+                                            <div class="flex items-start space-x-3">
+                                                <div class="flex-shrink-0 h-16 w-16 rounded-md overflow-hidden bg-gray-200">
+                                                    <img src="https://via.placeholder.com/150" class="h-full w-full object-cover">
+                                                </div>
+                                                <div>
+                                                    <h5 class="font-medium text-secondary">Chicken Fries</h5>
+                                                    <p class="text-sm text-gray-600">$3.49</p>
+                                                    <p class="text-xs text-gray-500 mt-1">Crispy chicken fries with dipping sauce</p>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3 flex space-x-2">
+                                            <button class="text-xs bg-primary text-white px-3 py-1 rounded hover:bg-orange-700 transition">Edit</button>
+                                            <button class="text-xs bg-green-500 text-white px-3 py-1 rounded hover:bg-green-700 transition">Approve</button>
+                                            <button class="text-xs bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700 transition">Reject</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <button class="text-primary hover:underline focus:outline-none text-sm">View All Products →</button>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-8 flex justify-end space-x-3">
+                                <button class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                    Cancel
+                                </button>
+                                <button class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                    Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: Top Vendors -->
+            <section id="top-vendors" class="hidden">
+                <div class="mb-6">
+                    <h1 class="text-2xl font-bold text-secondary">Highest Selling Vendors</h1>
+                    <p class="text-gray-600">Top performing vendors based on total sales</p>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow p-4 mb-6">
+                    <div class="flex flex-wrap items-center justify-between mb-6">
+                        <div>
+                            <h2 class="text-lg font-semibold text-secondary">Sales Leaderboard</h2>
+                            <p class="text-sm text-gray-500">Ranked by total revenue</p>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <select class="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-primary focus:border-primary text-sm">
+                                <option>All Categories</option>
+                                <option>Fast Food</option>
+                                <option>Italian</option>
+                                <option>Mexican</option>
+                            </select>
+                            <select class="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-primary focus:border-primary text-sm">
+                                <option>Last 7 Days</option>
+                                <option selected>Last 30 Days</option>
+                                <option>Last 90 Days</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Top Vendors List -->
+                    <div class="space-y-4">
+                        <!-- Top Vendor -->
+                        <div class="flex items-center p-4 border rounded-lg hover:shadow-md transition cursor-pointer">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="ml-4 flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="font-medium text-secondary">Burger King</h3>
+                                    <span class="text-sm font-semibold text-primary">$12,450</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <p class="text-sm text-gray-500">Fast Food</p>
+                                    <div class="flex items-center">
+                                        <span class="text-sm text-gray-500 mr-2">320 orders</span>
+                                        <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">+15%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Second Vendor -->
+                        <div class="flex items-center p-4 border rounded-lg hover:shadow-md transition cursor-pointer">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
+                                <span class="font-bold">2</span>
+                            </div>
+                            <div class="ml-4 flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="font-medium text-secondary">Pizza Hut</h3>
+                                    <span class="text-sm font-semibold text-primary">$10,820</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <p class="text-sm text-gray-500">Italian</p>
+                                    <div class="flex items-center">
+                                        <span class="text-sm text-gray-500 mr-2">285 orders</span>
+                                        <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">+8%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Third Vendor -->
+                        <div class="flex items-center p-4 border rounded-lg hover:shadow-md transition cursor-pointer">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
+                                <span class="font-bold">3</span>
+                            </div>
+                            <div class="ml-4 flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="font-medium text-secondary">Taco Bell</h3>
+                                    <span class="text-sm font-semibold text-primary">$8,750</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <p class="text-sm text-gray-500">Mexican</p>
+                                    <div class="flex items-center">
+                                        <span class="text-sm text-gray-500 mr-2">210 orders</span>
+                                        <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">+12%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <button class="text-primary hover:underline focus:outline-none">View Full Leaderboard →</button>
+                    </div>
+                </div>
+                
+                <!-- Sales Chart -->
+                <div class="bg-white rounded-lg shadow p-4 mb-6">
+                    <div class="flex flex-wrap items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold text-secondary">Sales Analytics</h2>
+                        <select class="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-primary focus:border-primary text-sm">
+                            <option>Burger King</option>
+                            <option>Pizza Hut</option>
+                            <option>Taco Bell</option>
+                            <option>All Vendors</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Chart Placeholder -->
+                    <div class="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fas fa-chart-bar text-4xl text-gray-400 mb-2"></i>
+                            <p class="text-gray-500">Sales analytics chart will be displayed here</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Top Products -->
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="p-4 border-b">
+                        <h2 class="text-lg font-semibold text-secondary">Top Selling Products</h2>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vendor</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sales</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Orders</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10 rounded-md overflow-hidden bg-gray-200">
+                                                <img src="https://via.placeholder.com/150" class="h-full w-full object-cover">
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-secondary">Whopper Sandwich</div>
+                                                <div class="text-sm text-gray-500">$6.99</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Burger King</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary font-medium">$2,450</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">186 orders</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10 rounded-md overflow-hidden bg-gray-200">
+                                                <img src="https://via.placeholder.com/150" class="h-full w-full object-cover">
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-secondary">Pepperoni Pizza</div>
+                                                <div class="text-sm text-gray-500">$12.99</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Pizza Hut</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary font-medium">$1,980</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">152 orders</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10 rounded-md overflow-hidden bg-gray-200">
+                                                <img src="https://via.placeholder.com/150" class="h-full w-full object-cover">
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-secondary">Crunchwrap Supreme</div>
+                                                <div class="text-sm text-gray-500">$4.99</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Taco Bell</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary font-medium">$1,750</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">148 orders</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: Driver Management -->
+            <section id="drivers" class="hidden">
+                <div class="mb-6 flex justify-between items-center">
+                    <div>
+                        <h1 class="text-2xl font-bold text-secondary">Driver Management</h1>
+                        <p class="text-gray-600">Manage all delivery drivers in the system</p>
+                    </div>
+                    <button class="bg-primary text-white px-4 py-2 rounded-md hover:bg-orange-700 transition focus:outline-none">
+                        <i class="fas fa-plus mr-2"></i> Add Driver
+                    </button>
+                </div>
+                
+                <!-- Driver Stats -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-medium">Total Drivers</p>
+                                <h3 class="text-2xl font-bold">45</h3>
+                            </div>
+                            <div class="bg-primary bg-opacity-10 p-3 rounded-full">
+                                <i class="fas fa-biking text-primary text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-medium">Active Now</p>
+                                <h3 class="text-2xl font-bold">28</h3>
+                            </div>
+                            <div class="bg-green-500 bg-opacity-10 p-3 rounded-full">
+                                <i class="fas fa-check-circle text-green-500 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm font-medium">Avg. Rating</p>
+                                <h3 class="text-2xl font-bold">4.7</h3>
+                                <div class="flex mt-1">
+                                    <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                    <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                    <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                    <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                    <i class="fas fa-star-half-alt text-yellow-400 text-sm"></i>
+                                </div>
+                            </div>
+                            <div class="bg-yellow-400 bg-opacity-10 p-3 rounded-full">
+                                <i class="fas fa-star text-yellow-400 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Driver List -->
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="p-4 border-b">
+                        <div class="flex flex-wrap justify-between items-center">
+                            <h2 class="text-lg font-semibold text-secondary">All Drivers</h2>
+                            <div class="flex items-center space-x-4">
+                                <select class="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-primary focus:border-primary text-sm">
+                                    <option>All Status</option>
+                                    <option>Online</option>
+                                    <option>Offline</option>
+                                </select>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-search text-gray-400"></i>
+                                    </div>
+                                    <input type="text" class="block pl-10 pr-3 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary text-sm" placeholder="Search drivers...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Driver</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Completed</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Earnings</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50 cursor-pointer">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden bg-gray-200">
+                                                <img src="https://via.placeholder.com/150" class="h-full w-full object-cover">
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-secondary">John Smith</div>
+                                                <div class="text-sm text-gray-500">+1 (555) 123-4567</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            Online
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">156</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$2,850</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex">
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star-half-alt text-yellow-400 text-xs"></i>
+                                            <span class="ml-1 text-xs text-gray-500">4.7</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button class="text-primary hover:text-orange-700 mr-3">View</button>
+                                        <button class="text-red-500 hover:text-red-700">Block</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 cursor-pointer">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden bg-gray-200">
+                                                <img src="https://via.placeholder.com/150" class="h-full w-full object-cover">
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-secondary">Michael Johnson</div>
+                                                <div class="text-sm text-gray-500">+1 (555) 987-6543</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                            Offline
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">98</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$1,980</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex">
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <span class="ml-1 text-xs text-gray-500">5.0</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button class="text-primary hover:text-orange-700 mr-3">View</button>
+                                        <button class="text-red-500 hover:text-red-700">Block</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 cursor-pointer">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden bg-gray-200">
+                                                <img src="https://via.placeholder.com/150" class="h-full w-full object-cover">
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-secondary">Sarah Williams</div>
+                                                <div class="text-sm text-gray-500">+1 (555) 456-7890</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                            Online
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">132</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$2,450</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex">
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="far fa-star text-yellow-400 text-xs"></i>
+                                            <span class="ml-1 text-xs text-gray-500">4.3</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button class="text-primary hover:text-orange-700 mr-3">View</button>
+                                        <button class="text-red-500 hover:text-red-700">Block</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="p-4 border-t flex justify-between items-center">
+                        <p class="text-sm text-gray-600">Showing <span class="font-medium">1</span> to <span class="font-medium">3</span> of <span class="font-medium">45</span> drivers</p>
+                        <nav class="flex space-x-2">
+                            <button class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                Previous
+                            </button>
+                            <button class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-white bg-primary hover:bg-orange-700">
+                                1
+                            </button>
+                            <button class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                2
+                            </button>
+                            <button class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                3
+                            </button>
+                            <button class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                Next
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+                
+                <!-- Driver Details Modal (hidden by default) -->
+                <div id="driverDetailsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="text-xl font-bold text-secondary">John Smith - Driver Details</h3>
+                                    <p class="text-gray-600">Manage this driver's information and assignments</p>
+                                </div>
+                                <button id="closeDriverModal" class="text-gray-400 hover:text-gray-500">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="mt-6">
+                                <div class="flex flex-col md:flex-row gap-6">
+                                    <!-- Profile Info -->
+                                    <div class="flex-1">
+                                        <div class="flex flex-col items-center mb-6">
+                                            <div class="w-24 h-24 rounded-full overflow-hidden bg-gray-200 mb-3">
+                                                <img src="https://via.placeholder.com/150" class="w-full h-full object-cover">
+                                            </div>
+                                            <h4 class="font-bold text-secondary">John Smith</h4>
+                                            <p class="text-sm text-gray-500">Driver ID: #DRV-4873</p>
+                                            <div class="mt-2 flex items-center">
+                                                <div class="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
+                                                <span class="text-xs text-gray-600">Online</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="space-y-4">
+                                            <div class="border-b pb-2">
+                                                <label class="block text-xs font-medium text-gray-500">Phone Number</label>
+                                                <p class="text-sm mt-1">+1 (555) 123-4567</p>
+                                            </div>
+                                            <div class="border-b pb-2">
+                                                <label class="block text-xs font-medium text-gray-500">Email</label>
+                                                <p class="text-sm mt-1">john.smith@example.com</p>
+                                            </div>
+                                            <div class="border-b pb-2">
+                                                <label class="block text-xs font-medium text-gray-500">Vehicle</label>
+                                                <p class="text-sm mt-1">Toyota Corolla 2020 (Black) - #GHI789</p>
+                                            </div>
+                                            <div class="border-b pb-2">
+                                                <label class="block text-xs font-medium text-gray-500">Commission Rate</label>
+                                                <div class="text-sm mt-1">20% per delivery</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Stats & Actions -->
+                                    <div class="flex-1">
+                                        <div class="grid grid-cols-2 gap-4 mb-6">
+                                            <div class="bg-gray-50 p-3 rounded">
+                                                <p class="text-xs text-gray-500">Completed Orders</p>
+                                                <p class="font-bold text-secondary">156</p>
+                                            </div>
+                                            <div class="bg-gray-50 p-3 rounded">
+                                                <p class="text-xs text-gray-500">Total Earnings</p>
+                                                <p class="font-bold text-secondary">$2,850</p>
+                                            </div>
+                                            <div class="bg-gray-50 p-3 rounded">
+                                                <p class="text-xs text-gray-500">Average Rating</p>
+                                                <div class="flex items-center">
+                                                    <p class="font-bold text-secondary mr-2">4.7</p>
+                                                    <div class="flex text-yellow-400 text-xs">
+                                                        <i class="fas fa-star"></i>
+                                                        <i class="fas fa-star"></i>
+                                                        <i class="fas fa-star"></i>
+                                                        <i class="fas fa-star"></i>
+                                                        <i class="fas fa-star-half-alt"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="bg-gray-50 p-3 rounded">
+                                                <p class="text-xs text-gray-500">Status</p>
+                                                <span class="px-2 py-1 text-xs leading-3 font-medium rounded-full bg-green-100 text-green-800">
+                                                    Active
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-6">
+                                            <h4 class="font-medium text-secondary mb-3">Current Location</h4>
+                                            <!-- Map placeholder -->
+                                            <div class="h-32 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500">
+                                                <i class="fas fa-map-marker-alt text-2xl mr-2 text-red-500"></i>
+                                                <span>123 Pizza St, Foodville, NY</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div>
+                                            <h4 class="font-medium text-secondary mb-3">Assigned Order</h4>
+                                            <div class="bg-gray-50 p-3 rounded-lg">
+                                                <div class="flex justify-between mb-2">
+                                                    <span class="text-sm font-medium">#GRUB-4869</span>
+                                                    <span class="text-sm text-gray-500">25 min ago</span>
+                                                </div>
+                                                <p class="text-sm mb-2">Burger King → 123 Customer Ave (1.5mi)</p>
+                                                <div class="flex justify-between items-center">
+                                                    <span class="text-xs text-gray-500">Est. Delivery: 15 min</span>
+                                                    <button class="text-xs bg-primary text-white px-2 py-1 rounded hover:bg-orange-700 transition">
+                                                        Track
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Action Buttons -->
+                                <div class="mt-8 flex flex-wrap justify-end gap-3">
+                                    <button class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                        Message
+                                    </button>
+                                    <button class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                        Block Driver
+                                    </button>
+                                    <button class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: Complaints & Reviews -->
+            <section id="complaints" class="hidden">
+                <div class="mb-6">
+                    <h1 class="text-2xl font-bold text-secondary">Complaints & Reviews</h1>
+                    <p class="text-gray-600">Manage customer feedback from the platform</p>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow p-4 mb-6">
+                    <div class="flex flex-wrap justify-between items-center mb-6">
+                        <div>
+                            <h2 class="text-lg font-semibold text-secondary">Customer Feedback</h2>
+                            <p class="text-sm text-gray-500">Unresolved issues and pending reviews</p>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <button class="px-3 py-1 bg-green-100 text-green-800 rounded-md text-sm hover:bg-green-200 transition">
+                                <i class="fas fa-check-circle mr-1"></i> Resolved (24)
+                            </button>
+                            <button class="px-3 py-1 bg-red-100 text-red-800 rounded-md text-sm hover:bg-red-200 transition">
+                                <i class="fas fa-exclamation-circle mr-1"></i> Unresolved (5)
+                            </button>
+                            <select class="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-primary focus:border-primary text-sm">
+                                <option>All Types</option>
+                                <option>Complaints</option>
+                                <option>Reviews</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Feedback Tabs -->
+                    <div class="border-b border-gray-200 mb-4">
+                        <nav class="flex space-x-8">
+                            <button class="border-b-2 border-primary text-primary px-1 py-2 text-sm font-medium">
+                                All
+                            </button>
+                            <button class="border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 px-1 py-2 text-sm font-medium">
+                                About Vendors
+                            </button>
+                            <button class="border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 px-1 py-2 text-sm font-medium">
+                                About Drivers
+                            </button>
+                            <button class="border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 px-1 py-2 text-sm font-medium">
+                                About Platform
+                            </button>
+                        </nav>
+                    </div>
+                    
+                    <!-- Feedback List -->
+                    <div class="space-y-4">
+                        <!-- Complaint Item -->
+                        <div class="p-4 border rounded-lg hover:shadow-md transition">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 class="font-medium text-secondary">Late delivery and cold food</h3>
+                                    <p class="text-xs text-gray-500">Burger King • Order #GRUB-4872</p>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="text-xs text-gray-500 mr-2">2 days ago</span>
+                                    <span class="px-2 py-1 text-xs leading-3 rounded-full bg-red-100 text-red-800">Unresolved</span>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden bg-gray-200">
+                                    <img src="https://via.placeholder.com/150" class="h-full w-full object-cover">
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-700 mb-2">The delivery arrived 40 minutes late and the food was completely cold. Very disappointing experience.</p>
+                                    <p class="text-xs text-gray-500">- John Doe (john@example.com)</p>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-3 border-t">
+                                <p class="text-xs text-gray-600 mb-2"><span class="font-medium">Driver:</span> Michael Johnson • Rating: 1/5</p>
+                                <div class="flex justify-end space-x-2">
+                                    <button class="text-xs bg-primary text-white px-3 py-1 rounded hover:bg-orange-700 transition">Respond</button>
+                                    <button class="text-xs bg-green-500 text-white px-3 py-1 rounded hover:bg-green-700 transition">Mark Resolved</button>
+                                    <button class="text-xs bg-gray-200 text-gray-700 px-3 py-1 rounded hover:bg-gray-300 transition">Ignore</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Review Item -->
+                        <div class="p-4 border rounded-lg hover:shadow-md transition">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 class="font-medium text-secondary">Excellent service!</h3>
+                                    <p class="text-xs text-gray-500">Pizza Hut • Order #GRUB-4865</p>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="text-xs text-gray-500 mr-2">1 week ago</span>
+                                    <span class="px-2 py-1 text-xs leading-3 rounded-full bg-green-100 text-green-800">Approved</span>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden bg-gray-200">
+                                    <img src="https://via.placeholder.com/150" class="h-full w-full object-cover">
+                                </div>
+                                <div>
+                                    <div class="flex items-center mb-1">
+                                        <div class="flex text-yellow-400 text-xs mr-2">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                        <span class="text-xs text-gray-500">5/5</span>
+                                    </div>
+                                    <p class="text-sm text-gray-700 mb-2">The pizza was delicious, arrived hot and the driver was very polite. Will definitely order again!</p>
+                                    <p class="text-xs text-gray-500">- Jane Smith (jane@example.com)</p>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-3 border-t">
+                                <p class="text-xs text-gray-600"><span class="font-medium">Driver:</span> Sarah Williams • Rating: 5/5</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Complaint Item -->
+                        <div class="p-4 border rounded-lg hover:shadow-md transition">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 class="font-medium text-secondary">Missing items in my order</h3>
+                                    <p class="text-xs text-gray-500">Taco Bell • Order #GRUB-4867</p>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="text-xs text-gray-500 mr-2">3 days ago</span>
+                                    <span class="px-2 py-1 text-xs leading-3 rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden bg-gray-200">
+                                    <img src="https://via.placeholder.com/150" class="h-full w-full object-cover">
+                                </div>
+                                <div>
+                                    <div class="flex items-center mb-1">
+                                        <div class="flex text-yellow-400 text-xs mr-2">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="far fa-star"></i>
+                                            <i class="far fa-star"></i>
+                                            <i class="far fa-star"></i>
+                                        </div>
+                                        <span class="text-xs text-gray-500">2/5</span>
+                                    </div>
+                                    <p class="text-sm text-gray-700 mb-2">My Crunchwrap Supreme was completely missing from the order. Only got the drinks and nachos. Very frustrating!</p>
+                                    <p class="text-xs text-gray-500">- Robert Johnson (robert@example.com)</p>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-3 border-t">
+                                <p class="text-xs text-gray-600 mb-2"><span class="font-medium">Vendor Response:</span> "We will investigate this issue with our staff."</p>
+                                <div class="flex justify-end space-x-2">
+                                    <button class="text-xs bg-primary text-white px-3 py-1 rounded hover:bg-orange-700 transition">Respond</button>
+                                    <button class="text-xs bg-green-500 text-white px-3 py-1 rounded hover:bg-green-700 transition">Issue Refund</button>
+                                    <button class="text-xs bg-gray-200 text-gray-700 px-3 py-1 rounded hover:bg-gray-300 transition">Ignore</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 flex justify-between items-center">
+                        <p class="text-sm text-gray-600">Showing <span class="font-medium">3</span> out of <span class="font-medium">29</span> feedback items</p>
+                        <button class="text-primary hover:underline focus:outline-none">View All Feedback →</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: Delivery Fee Settings -->
+            <section id="settings" class="hidden">
+                <div class="mb-6">
+                    <h1 class="text-2xl font-bold text-secondary">Delivery Fee Settings</h1>
+                    <p class="text-gray-600">Configure delivery charges based on distance</p>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                    <div class="p-4 border-b">
+                        <h2 class="text-lg font-semibold text-secondary">Current Pricing Structure</h2>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Distance Range (miles)</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Base Fee</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Per Mile Fee</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Min. Order</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                                        <input type="text" value="0 - 3" class="border border-gray-300 rounded-md px-2 py-1 w-24 focus:outline-none focus:ring-primary focus:border-primary text-sm">
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-500 sm:text-sm">$</span>
+                                            </div>
+                                            <input type="text" value="3.00" class="focus:ring-primary focus:border-primary block w-full pl-7 pr-12 sm:text-sm border border-gray-300 rounded-md">
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-500 sm:text-sm">$</span>
+                                            </div>
+                                            <input type="text" value="0.50" class="focus:ring-primary focus:border-primary block w-full pl-7 pr-12 sm:text-sm border border-gray-300 rounded-md">
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-500 sm:text-sm">$</span>
+                                            </div>
+                                            <input type="text" value="10.00" class="focus:ring-primary focus:border-primary block w-full pl-7 pr-12 sm:text-sm border border-gray-300 rounded-md">
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                                        <button class="text-red-500 hover:text-red-700">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                                        <input type="text" value="3 - 5" class="border border-gray-300 rounded-md px-2 py-1 w-24 focus:outline-none focus:ring-primary focus:border-primary text-sm">
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-500 sm:text-sm">$</span>
+                                            </div>
+                                            <input type="text" value="4.50" class="focus:ring-primary focus:border-primary block w-full pl-7 pr-12 sm:text-sm border border-gray-300 rounded-md">
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-500 sm:text-sm">$</span>
+                                            </div>
+                                            <input type="text" value="0.75" class="focus:ring-primary focus:border-primary block w-full pl-7 pr-12 sm:text-sm border border-gray-300 rounded-md">
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-500 sm:text-sm">$</span>
+                                            </div>
+                                            <input type="text" value="15.00" class="focus:ring-primary focus:border-primary block w-full pl-7 pr-12 sm:text-sm border border-gray-300 rounded-md">
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                                        <button class="text-red-500 hover:text-red-700">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                                        <input type="text" value="5 - 10" class="border border-gray-300 rounded-md px-2 py-1 w-24 focus:outline-none focus:ring-primary focus:border-primary text-sm">
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-500 sm:text-sm">$</span>
+                                            </div>
+                                            <input type="text" value="6.00" class="focus:ring-primary focus:border-primary block w-full pl-7 pr-12 sm:text-sm border border-gray-300 rounded-md">
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-500 sm:text-sm">$</span>
+                                            </div>
+                                            <input type="text" value="1.00" class="focus:ring-primary focus:border-primary block w-full pl-7 pr-12 sm:text-sm border border-gray-300 rounded-md">
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <span class="text-gray-500 sm:text-sm">$</span>
+                                            </div>
+                                            <input type="text" value="20.00" class="focus:ring-primary focus:border-primary block w-full pl-7 pr-12 sm:text-sm border border-gray-300 rounded-md">
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-secondary">
+                                        <button class="text-red-500 hover:text-red-700">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="p-4 border-t">
+                        <button class="text-primary hover:underline focus:outline-none text-sm">
+                            <i class="fas fa-plus mr-1"></i> Add New Distance Range
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Additional Settings -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Peak Hours Pricing -->
+                    <div class="bg-white rounded-lg shadow overflow-hidden">
+                        <div class="p-4 border-b">
+                            <h2 class="text-lg font-semibold text-secondary">Peak Hours Pricing</h2>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <div>
+                                    <p class="text-sm font-medium text-secondary">Peak Hours Surcharge</p>
+                                    <p class="text-xs text-gray-500">Applied during busy hours</p>
+                                </div>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                </label>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Peak Hours</label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <select class="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-primary focus:border-primary text-sm">
+                                            <option>12:00 PM - 2:00 PM</option>
+                                            <option>5:00 PM - 8:00 PM</option>
+                                            <option selected>Both Time Slots</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Additional Charge</label>
+                                    <div class="relative rounded-md shadow-sm">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <span class="text-gray-500 sm:text-sm">$</span>
+                                        </div>
+                                        <input type="text" value="2.00" class="focus:ring-primary focus:border-primary block w-full pl-7 pr-12 sm:text-sm border border-gray-300 rounded-md">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Fees -->
+                    <div class="bg-white rounded-lg shadow overflow-hidden">
+                        <div class="p-4 border-b">
+                            <h2 class="text-lg font-semibold text-secondary">Additional Fees</h2>
+                        </div>
+                        <div class="p-4">
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm font-medium text-secondary">Small Order Fee</p>
+                                        <p class="text-xs text-gray-500">Applied to orders below minimum amount</p>
+                                    </div>
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer">
+                                        <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                    </label>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Service Fee</label>
+                                    <div class="relative rounded-md shadow-sm">
+                                        <input type="text" value="5" class="block w-full pr-12 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary">
+                                        <div class="absolute inset-y-0 right-0 flex items-center">
+                                            <span class="h-full py-0 pl-2 pr-3 border-transparent bg-transparent text-gray-500 sm:text-sm">%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Save Button -->
+                <div class="mt-6 flex justify-end">
+                    <button class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                        Save Delivery Settings
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileMenuClose = document.getElementById('mobileMenuClose');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        mobileMenuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+        });
+        
+        mobileMenuClose.addEventListener('click', () => {
+            mobileMenu.classList.remove('open');
+        });
+        
+        // Show all sections for demo purposes
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                section.classList.remove('hidden');
+            });
+            
+            // Set active section based on hash
+            const showSection = (hash) => {
+                sections.forEach(section => {
+                    section.classList.add('hidden');
+                });
+                
+                if (hash) {
+                    const section = document.querySelector(hash);
+                    if (section) {
+                        section.classList.remove('hidden');
+                    } else {
+                        document.querySelector('#dashboard').classList.remove('hidden');
+                    }
+                } else {
+                    document.querySelector('#dashboard').classList.remove('hidden');
+                }
+                
+                // Close mobile menu if open
+                mobileMenu.classList.remove('open');
+            };
+            
+            // Handle initial hash
+            showSection(window.location.hash);
+            
+            // Handle hash changes
+            window.addEventListener('hashchange', () => {
+                showSection(window.location.hash);
+            });
+            
+            // Demo vendor modal
+            const vendorModal = document.getElementById('vendorDetailsModal');
+            const closeVendorModal = document.getElementById('closeVendorModal');
+            
+            document.querySelectorAll('a[href="#vendors"]').forEach(link => {
+                link.addEventListener('click', () => {
+                    // In a real app, this would show details for the clicked vendor
+                    vendorModal.classList.remove('hidden');
+                });
+            });
+            
+            closeVendorModal.addEventListener('click', () => {
+                vendorModal.classList.add('hidden');
+            });
+            
+            // Demo driver modal
+            const driverModal = document.getElementById('driverDetailsModal');
+            const closeDriverModal = document.getElementById('closeDriverModal');
+            
+            document.querySelectorAll('a[href="#drivers"]').forEach(link => {
+                link.addEventListener('click', () => {
+                    // In a real app, this would show details for the clicked driver
+                    driverModal.classList.remove('hidden');
+                });
+            });
+            
+            closeDriverModal.addEventListener('click', () => {
+                driverModal.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
